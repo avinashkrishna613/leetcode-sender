@@ -25,10 +25,12 @@ jobs:
 
     - name: Install dependencies
       run: |
+        cd ${{ github.workspace }}
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
     - name: Send daily email
+      working-directory: ${{ github.workspace }}
       env:
         SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
         SENDER_PASSWORD: ${{ secrets.SENDER_PASSWORD }}
@@ -37,6 +39,7 @@ jobs:
         python send_daily_email.py
 
     - name: Commit and push progress
+      working-directory: ${{ github.workspace }}
       run: |
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
