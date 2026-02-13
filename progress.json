@@ -1,5 +1,8 @@
 {
-  "sent_questions": [],
-  "last_sent_date": null,
-  "total_sent": 0
+  "sent_questions": [
+    1,
+    3
+  ],
+  "last_sent_date": "2026-02-13T18:51:54.858346",
+  "total_sent": 2
 }
