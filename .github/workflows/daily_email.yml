@@ -2,11 +2,8 @@ name: Send Daily LeetCode Questions
 
 on:
   schedule:
-    # Runs at 3:30 AM UTC (9:00 AM IST)
-    # IST = UTC + 5:30, so 9:00 AM IST = 3:30 AM UTC
     - cron: '30 3 * * *'
-
-  workflow_dispatch:  # Allows manual trigger from GitHub UI
+  workflow_dispatch:
 
 jobs:
   send-email:
@@ -14,23 +11,37 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
+        fetch-depth: 1
+
+    - name: Verify files exist
+      run: |
+        echo "=== Checking files ==="
+        ls -la
+        echo ""
+        if [ ! -f "send_daily_email.py" ]; then
+          echo "ERROR: send_daily_email.py not found!"
+          exit 1
+        fi
+        if [ ! -f "ranked_questions.json" ]; then
+          echo "ERROR: ranked_questions.json not found!"
+          exit 1
+        fi
+        echo "✓ All required files present"
 
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.10'
+        cache: 'pip'
 
     - name: Install dependencies
       run: |
-        cd ${{ github.workspace }}
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
     - name: Send daily email
-      working-directory: ${{ github.workspace }}
       env:
         SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
         SENDER_PASSWORD: ${{ secrets.SENDER_PASSWORD }}
@@ -39,7 +50,6 @@ jobs:
         python send_daily_email.py
 
     - name: Commit and push progress
-      working-directory: ${{ github.workspace }}
       run: |
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
