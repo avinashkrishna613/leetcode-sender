@@ -33,7 +33,7 @@ def mark_questions_sent(question_ids):
 
     save_progress(progress)
 
-    print(f"📝 Progress updated: {len(progress['sent_questions'])} total questions sent")
+    print(f" Progress updated: {len(progress['sent_questions'])} total questions sent")
 
 def get_next_questions(ranked_questions, count=2):
     """Get next unsent questions with different difficulties"""
@@ -44,7 +44,7 @@ def get_next_questions(ranked_questions, count=2):
     unsent = [q for q in ranked_questions if q['id'] not in sent_ids]
 
     if len(unsent) < count:
-        print(f"⚠️  Warning: Only {len(unsent)} unsent questions remaining!")
+        print(f"  Warning: Only {len(unsent)} unsent questions remaining!")
         if len(unsent) == 0:
             return []
         count = len(unsent)
